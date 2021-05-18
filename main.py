@@ -1,4 +1,7 @@
 import pygame
+import numpy as np
+from pygame import draw
+import button
 
 # initialize game
 pygame.init()
@@ -50,6 +53,18 @@ class Player(pygame.sprite.Sprite):
         screen.blit(pygame.transform.flip(self.playerIcon, self.flip, False), self.rect)
 
 
+# functions
+def addElement(icon, x, y):
+    element_rect = icon.get_rect()
+    element_rect.center = (x, y)
+    screen.blit(icon, (x, y))
+
+def drawGrid(grid_size, window_size=700):
+    blockSize = window_size//grid_size #Set the size of the grid block
+    for x in range(window_size):
+        for y in range(window_size):
+            rect = pygame.Rect(x*blockSize, y*blockSize, blockSize, blockSize)
+            pygame.draw.rect(screen, (0, 0, 0), rect, 1)
 
 # initialize window
 size = width, height = 700, 700
@@ -59,6 +74,7 @@ icon = pygame.image.load("face.jpg")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 FPS = 60
+start_game = False
 
 # initialize player
 playerX = 0
@@ -69,9 +85,54 @@ move_right = False
 move_up = False
 move_down = False
 
+# other elements
+icecream = pygame.image.load('ice-cream-cart.png')
+icecreamX = np.random.randint(100, 650)
+icecreamY = np.random.randint(100, 650)
+dog = pygame.image.load('dog.png')
+dogX = np.random.randint(100, 650)
+dogY = np.random.randint(100, 650)
+## fix below
+if dogX == icecreamX or dogY == icecreamY:
+    dogX = np.random.randint(100, 650)
+    dogY = np.random.randint(100, 650)
+
+start_img = pygame.image.load('start.png')
+exit_img = pygame.image.load('exit.png')
+start_button = button.Button(270, 200, start_img, 0.5)
+exit_button = button.Button(270, 500, exit_img, 0.5)
+
+# initialize goal
+goal = pygame.image.load('goal.png')
+goalX = width-66
+goalY = height-66
+def reachedGoal(player_pos_x, player_pos_y):
+    if goalX - player_pos_x < 40 and goalY - player_pos_y < 40:
+        return True
+    return False
+
 # Game loop
 running = True
 while running:
+    screen.fill((255, 255, 255))
+
+    if not start_game: # game has not started and player is in main menu
+        start_font = pygame.font.Font('freesansbold.ttf', 28)
+        start_text = start_font.render('Click Start to begin', True, (0, 0, 0))
+        screen.blit(start_text, (230, 100))
+        if start_button.draw(screen):
+            start_game = True
+        if exit_button.draw(screen):
+            running = False
+    
+    else:
+        player.draw()
+        # drawGrid(10)
+        addElement(icecream, icecreamX, icecreamY)
+        addElement(dog, dogX, dogY)
+        addElement(goal, goalX, goalY)
+        player.move(move_left, move_right, move_up, move_down)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # quit button pressed
             running = False
@@ -99,8 +160,10 @@ while running:
             if event.key == pygame.K_DOWN:
                 move_down = False                
 
+    if reachedGoal(player.rect.x, player.rect.y):
+        over_font = pygame.font.Font('freesansbold.ttf', 28)
+        game_over_text = over_font.render('Game over!', True, (0, 0, 0))
+        screen.blit(game_over_text, (300, 150))
+
     clock.tick(FPS)
-    screen.fill((255, 255, 255))
-    player.draw()
-    player.move(move_left, move_right, move_up, move_down)
     pygame.display.update()
