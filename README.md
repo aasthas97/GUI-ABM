@@ -1,4 +1,4 @@
-Front-end for Agent Based Model. Written in Python.
+Front-end for Agent Based Model. Written in Python. \\
 Run the game online [here](https://replit.com/@aasthash/ABM-GUI#main.py).
 # Requirements
 - Python > 3.5
