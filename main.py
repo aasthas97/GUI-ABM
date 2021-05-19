@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = speed
         self.direction = 1
         self.flip = False
-        self.playerIcon = pygame.image.load('player.png')
+        self.playerIcon = pygame.image.load('./images/player.png')
         self.rect = self.playerIcon.get_rect()
         self.rect.center = (playerX, playerY)
 
@@ -70,7 +70,7 @@ def drawGrid(grid_size, window_size=700):
 size = width, height = 700, 700
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Reach the hospital')
-icon = pygame.image.load("face.jpg")
+icon = pygame.image.load("./images/face.jpg")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 FPS = 60
@@ -86,10 +86,10 @@ move_up = False
 move_down = False
 
 # other elements
-icecream = pygame.image.load('ice-cream-cart.png')
+icecream = pygame.image.load('./images/ice-cream-cart.png')
 icecreamX = np.random.randint(100, 650)
 icecreamY = np.random.randint(100, 650)
-dog = pygame.image.load('dog.png')
+dog = pygame.image.load('./images/dog.png')
 dogX = np.random.randint(100, 650)
 dogY = np.random.randint(100, 650)
 ## fix below
@@ -97,13 +97,13 @@ if dogX == icecreamX or dogY == icecreamY:
     dogX = np.random.randint(100, 650)
     dogY = np.random.randint(100, 650)
 
-start_img = pygame.image.load('start.png')
-exit_img = pygame.image.load('exit.png')
+start_img = pygame.image.load('./images/start.png')
+exit_img = pygame.image.load('./images/exit.png')
 start_button = button.Button(270, 200, start_img, 0.5)
 exit_button = button.Button(270, 500, exit_img, 0.5)
 
 # initialize goal
-goal = pygame.image.load('goal.png')
+goal = pygame.image.load('./images/goal.png')
 goalX = width-66
 goalY = height-66
 def reachedGoal(player_pos_x, player_pos_y):
