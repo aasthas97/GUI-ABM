@@ -3,6 +3,8 @@ import numpy as np
 from pygame import draw
 import button
 
+"""Features: Start menu present, grid background absent"""
+
 # initialize game
 pygame.init()
 
@@ -153,7 +155,6 @@ goal = Graphics('./images/goal.png')
 pygame.init()
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Reach the hospital')
-# bg = pygame.image.load("./images/grid-bg.png")
 clock = pygame.time.Clock()
 FPS = 60
 
