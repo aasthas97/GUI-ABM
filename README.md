@@ -1,6 +1,6 @@
 # To steal or not to steal
 
-Front-end for Agent Based Model. Written in Python. \
+Front-end for Agent Based Model. Written in Python.
 
 # Requirements
 - Python > 3.5
