@@ -3,7 +3,6 @@ import numpy as np
 from pygame import draw
 from pygame import font
 # import ipywidgets as widgets
-import stealing
 import button
 
 # CLASSES
