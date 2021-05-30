@@ -88,7 +88,7 @@ class Element:
         net = P-R
         self.decision_info = [Text('R = Risk Avoidance X Risk =  %.2f' % (risk_avoidance * self.risk)),
         Text('P = Profit Seeking X (Reward-Cost) = %.2f' % (profit_seeking * (self.reward-self.cost))),
-        Text('Random Number: %.2f' % rand),
+        Text('Random Number= %.2f' % rand),
         Text('P - R = %.2f' % net)]
         if rand < net:
             return 1
@@ -104,7 +104,7 @@ class Element:
     def display_decision(self):
         for d in range(len(self.decision_info)):
             value = self.decision_info[d]
-            value.write(loc = (300, 530+d*25), color = (4, 92, 90), font_size=20)
+            value.write(loc = (20, 510+d*25), color = (4, 92, 90), font_size=20)
 
 class Graphics:
     def __init__(self, icon_path):
@@ -166,7 +166,7 @@ rrc_ring = [Text('Risk: %.2f' % ring.risk), Text('Cost: %.2f' % ring.cost), Text
 rrc_bank = [Text('Risk: %.2f' % bank.risk), Text('Cost: %.2f' % bank.cost), Text('Reward: %.2f' % bank.reward)]
 
 # WINDOW
-size = width, height = 1100, 700 # window size
+size = width, height = 1100, 750 # window size
 bg = pygame.image.load("./images/bg.jpg")
 bg2 = pygame.image.load("./images/bg-2.jpg")
 clock = pygame.time.Clock()
@@ -186,6 +186,9 @@ while running:
     screen.blit(bg2, (700, 0))
     player.draw()
     # addGameRect(screen, width-400, height-200)
+    # quit = button.Button(850, 620, pygame.image.load('./images/quit_btn.png'), 0.7)
+    # if quit.draw(screen):
+    #     running = False
 
     car.draw(carX, carY)
     bank.draw(bankX, bankY)
@@ -216,8 +219,9 @@ while running:
         value = rrc_car[l]
         value.write(loc = (800, 420+l*20), color = (241,12,69))              
 
+    # DECISION DISPLAY
     if display_decision:
-        foo.write((300, 650), c, font_size=28)
+        foo.write((20, 620), c, font_size=24)
         if car.collided:
             car.display_decision()
 
@@ -227,8 +231,8 @@ while running:
         if ring.collided:
             ring.display_decision()
 
-        proceed = button.Button(50, 550, pygame.image.load('./images/proceed_btn.png'), 0.7)
-        quit = button.Button(50, 620, pygame.image.load('./images/quit_btn.png'), 0.7)
+        proceed = button.Button(15, 660, pygame.image.load('./images/proceed_btn.png'), 0.7)
+        
         if proceed.draw(screen):
             player.reset()
             steal = 0
@@ -239,11 +243,8 @@ while running:
             bank.decision_info.clear()
 
             display_decision = False
-        
-        if quit.draw(screen):
-            running = False
-
     
+
     # MOVE PLAYER
     player.move(move_left, move_right, move_up, move_down)
 
@@ -281,7 +282,7 @@ while running:
         display_decision = True
         bank.collided = True
         steal = bank.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('You steal.') if steal else Text('You don\'t steal.')
+        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0) 
 
     if isCollide(player, car):
@@ -289,7 +290,7 @@ while running:
         display_decision = True
         car.collided = True
         steal = car.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('You steal') if steal else Text('You don\'t steal')
+        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0) 
         
     if isCollide(player, ring):
@@ -297,7 +298,7 @@ while running:
         display_decision = True
         ring.collided = True
         steal = ring.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('You steal.') if steal else Text('You don\'t steal.')
+        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0)
 
        
