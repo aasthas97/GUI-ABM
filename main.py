@@ -66,9 +66,9 @@ class Player(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(pygame.transform.flip(self.playerIcon, self.flip, False), self.rect)
     
-    def reset(self):
-        self.rect.x = 0
-        self.rect.y = 0
+    def reset(self, x, y):
+        self.rect.x = x-70
+        self.rect.y = y-70
         self.rand = np.random.random()
         self.rand2 = np.random.random()
 
@@ -76,7 +76,7 @@ class Element:
     def __init__(self, icon_path):
         self.icon = pygame.image.load(icon_path)
         self.rect = self.icon.get_rect()
-        self.risk= np.random.random()
+        # self.risk= np.random.random()
         self.cost = np.random.random()
         self.reward = np.random.random()
         self.collided = False
@@ -137,6 +137,10 @@ def isCollide(item1, item2):
     r2 = item2.rect
     return r1.colliderect(r2)
 
+def calculateRisk(itemX, itemY):
+    risk = np.hypot(400-itemX, 400-itemY) # police coordinates: (400, 400)
+    return risk/1000
+
 # PLAYER
 playerX = 0
 playerY = 0
@@ -149,17 +153,24 @@ move_down = False
 player_vals = [Text('Risk avoidance: %.2f' % player.prob_risk_avoidance), Text('Profit-seeking: %.2f' % player.prob_profit_seeking), Text('Learning Rate: %.2f' % player.learning_rate)]
 
 # ELEMENTS
+police = Element('./images/police.png')
+policeX = 400
+policeY = 400
+
 car = Element('./images/car.png')
 carX = 300
 carY = 100
+car.risk = calculateRisk(carX, carY)
 
 bank = Element('./images/bank.png')
 bankX = 560
 bankY = 280
+bank.risk = calculateRisk(bankX, bankY)
 
 ring = Element('./images/store.png')
-ringX = 185
+ringX = 10
 ringY = 400
+ring.risk = calculateRisk(ringX, ringY)
 
 rrc_car = [Text('Risk: %.2f' % car.risk), Text('Cost: %.2f' % car.cost), Text('Reward: %.2f' % car.reward)]
 rrc_ring = [Text('Risk: %.2f' % ring.risk), Text('Cost: %.2f' % ring.cost), Text('Reward: %.2f' % ring.reward)]
@@ -170,7 +181,7 @@ size = width, height = 1100, 750 # window size
 bg = pygame.image.load("./images/bg.jpg")
 bg2 = pygame.image.load("./images/bg-2.jpg")
 clock = pygame.time.Clock()
-FPS = 30
+FPS = 50
 
 # initialize game
 pygame.init()
@@ -185,14 +196,11 @@ while running:
     screen.blit(bg, (0, 0))
     screen.blit(bg2, (700, 0))
     player.draw()
-    # addGameRect(screen, width-400, height-200)
-    # quit = button.Button(850, 620, pygame.image.load('./images/quit_btn.png'), 0.7)
-    # if quit.draw(screen):
-    #     running = False
 
     car.draw(carX, carY)
     bank.draw(bankX, bankY)
-    ring.draw(ringX, ringY)  
+    ring.draw(ringX, ringY)
+    police.draw(policeX, policeY)  
     
     # DISPLAY OUTSIDE GAME WINDOW
     Text('YOU').write((730, 30), color = (255, 255, 255), font_size=24)
@@ -225,24 +233,34 @@ while running:
         if car.collided:
             car.display_decision()
 
-        if bank.collided:
+        elif bank.collided:
             bank.display_decision()
 
-        if ring.collided:
+        elif ring.collided:
             ring.display_decision()
 
         proceed = button.Button(15, 660, pygame.image.load('./images/proceed_btn.png'), 0.7)
         
         if proceed.draw(screen):
-            player.reset()
             steal = 0
-            car.collided, ring.collided, bank.collided = False, False, False
-
-            car.decision_info.clear()
-            ring.decision_info.clear()
-            bank.decision_info.clear()
-
             display_decision = False
+
+            if car.collided:
+                player.reset(carX, carY)
+                car.collided = False
+                car.decision_info.clear()
+
+            elif bank.collided:
+                player.reset(bankX, bankY)
+                bank.collided = False
+                bank.decision_info.clear()
+            
+            elif ring.collided:
+                player.reset(ringX, ringY)
+                ring.collided = False
+                ring.decision_info.clear()
+
+
     
 
     # MOVE PLAYER
@@ -282,7 +300,7 @@ while running:
         display_decision = True
         bank.collided = True
         steal = bank.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
+        foo = Text('Random Number < (P-R). You steal.') if steal else Text('Random Number > (P-R). You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0) 
 
     if isCollide(player, car):
@@ -290,7 +308,7 @@ while running:
         display_decision = True
         car.collided = True
         steal = car.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
+        foo = Text('Random Number < (P-R). You steal.') if steal else Text('Random Number > (P-R). You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0) 
         
     if isCollide(player, ring):
@@ -298,7 +316,7 @@ while running:
         display_decision = True
         ring.collided = True
         steal = ring.decide(player.prob_risk_avoidance, player.prob_profit_seeking, player.rand)
-        foo = Text('Rand < Net. You steal.') if steal else Text('Rand > Net. You don\'t steal.')
+        foo = Text('Random Number < (P-R). You steal.') if steal else Text('Random Number > (P-R). You don\'t steal.')
         c = (255, 0, 0) if steal else (0, 255, 0)
 
        
