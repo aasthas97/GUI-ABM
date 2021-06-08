@@ -15,3 +15,4 @@ Made for the "Criminal Justice Data Analysis" MOOC offered by [Center for Crimin
 - Press `esc` key to leave the game at any time
 
 ---------------
+Protected by the MIT License. Copyright (c) Aastha Sharma 2021
