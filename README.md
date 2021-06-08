@@ -13,3 +13,5 @@ Made for the "Criminal Justice Data Analysis" MOOC offered by [Center for Crimin
 - When you reach an obstruction, you'll have the option to steal. Beware, you may get caught if you do!
 - Do not forget to press the proceed button before moving away from a target.
 - Press `esc` key to leave the game at any time
+
+---------------
