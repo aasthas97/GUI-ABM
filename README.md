@@ -1,7 +1,8 @@
 # To steal or not to steal
 
 Front-end for Agent Based Model. Written in Python.\
-Made for the "Criminal Justice Data Analysis" MOOC offered by [Center for Criminal Justice Research](https://ccjr.cse.iitk.ac.in/index.php).
+Made for the "Criminal Justice Data Analysis" MOOC offered by [Center for Criminal Justice Research](https://ccjr.cse.iitk.ac.in/index.php).\
+All icons have been sourced from [Flaticon](https://flaticon.com).
 
 ## Requirements
 - Python > 3.5
